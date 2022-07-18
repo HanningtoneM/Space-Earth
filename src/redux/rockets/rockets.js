@@ -1,68 +1,35 @@
-const LIST_ROCKETS = 'SPACE-TRAVELERS/ROCKETS/LIST_ROCKETS';
-const RESERVE_ROCKET = 'SPACE-TRAVELERS/ROCKETS/RESERVE_ROCKET';
-const CANCEL_ROCKET = 'SPACE-TRAVELERS/ROCKETS/CANCEL_ROCKET';
+import SpacesxService from '../../services/SpacexService';
 
-const initialState = [];
+const ADD_ALL_ROCKETS = 'spacehub/rockets/ADD_ALL_ROCKETS';
+const TOGGLE_RESERVATION = 'spacehub/rockets/TOGGLE_RESERVATION';
 
-const reducer = (state = initialState, action) => {
+export default function rockets(state = [], action = {}) {
   switch (action.type) {
-    case LIST_ROCKETS:
+    case ADD_ALL_ROCKETS:
       return action.payload;
-    case RESERVE_ROCKET:
+    case TOGGLE_RESERVATION:
       return state.map((rocket) => {
-        if (rocket.id !== action.id) {
-          return rocket;
-        }
-        return { ...rocket, reserved: true };
-      });
-    case CANCEL_ROCKET:
-      return state.map((rocket) => {
-        if (rocket.id !== action.id) {
-          return rocket;
-        }
-        return { ...rocket, reserved: false };
+        if (rocket.id !== action.payload) return rocket;
+        return { ...rocket, reserved: !rocket.reserved };
       });
     default:
       return state;
   }
-};
+}
 
-const listRockets = (payload) => ({
-  type: LIST_ROCKETS,
-  payload,
-});
-
-const reserveRocket = (id) => ({
-  type: RESERVE_ROCKET,
-  id,
-});
-
-const cancelRocket = (id) => ({
-  type: CANCEL_ROCKET,
-  id,
-});
-
-const getRocketsFromAPI = async () => {
-  const API_URL = 'https://api.spacexdata.com/v3/rockets';
-  const RESPONSE = await fetch(API_URL);
-  if (await RESPONSE.ok) {
-    const RAW_ROCKETS = await RESPONSE.json();
-    const ROCKETS = [];
-    for (let i = 0; i < RAW_ROCKETS.length; i += 1) {
-      ROCKETS.push({
-        reserved: false,
-        id: RAW_ROCKETS[i].id,
-        name: RAW_ROCKETS[i].rocket_name,
-        image: RAW_ROCKETS[i].flickr_images[0],
-        description: RAW_ROCKETS[i].description,
-      });
-    }
-    return ROCKETS;
+export const getRockets = async (dispatch, getState) => {
+  const currRockets = getState().rockets;
+  if (currRockets.length === 0) {
+    const { data } = await SpacesxService.getRockets();
+    const rockets = data.map((rocket) => ({
+      id: rocket.id,
+      name: rocket.rocket_name,
+      description: rocket.description,
+      flickr_images: rocket.flickr_images[0],
+      reserved: false,
+    }));
+    dispatch({ type: ADD_ALL_ROCKETS, payload: rockets });
   }
-  return [];
 };
 
-export default reducer;
-export {
-  getRocketsFromAPI, listRockets, reserveRocket, cancelRocket,
-};
+export const reserveRocket = (id) => ({ type: TOGGLE_RESERVATION, payload: id });

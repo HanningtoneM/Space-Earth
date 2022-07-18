@@ -1,24 +1,21 @@
-import styled from 'styled-components';
-import { Routes, Route } from 'react-router-dom';
-import Header from './components/Header/Header';
-import Rockets from './components/Rockets/Rockets';
-import Profile from './components/Profile/Profile';
-import Missions from './components/Missions/Missions';
-
-const WholePage = styled.div`
-  min-height: 100vh;
-`;
+import './App.css';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Nav from './components/nav/Nav';
+import MyProfile from './components/my-profile/MyProfile';
+import Rockets from './components/rockets/Rockets';
+import Missions from './components/missions/Missions';
 
 function App() {
   return (
-    <WholePage>
-      <Header />
+    <div className="App">
+      <Nav />
       <Routes>
-        <Route path="/" element={<Rockets />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/" element={<Navigate replace to="/rockets" />} />
+        <Route path="/rockets" element={<Rockets />} />
         <Route path="/missions" element={<Missions />} />
+        <Route path="/profile" element={<MyProfile />} />
       </Routes>
-    </WholePage>
+    </div>
   );
 }
 

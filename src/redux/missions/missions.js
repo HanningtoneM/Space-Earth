@@ -1,67 +1,45 @@
-const LIST_MISSIONS = 'SPACE-TRAVELERS/MISSIONS/LIST_MISSIONS';
-const JOIN_MISSION = 'SPACE-TRAVELERS/MISSIONS/JOIN_MISSION';
-const LEAVE_MISSION = 'SPACE-TRAVELERS/MISSIONS/LEAVE_MISSION';
+import SpacesxService from '../../services/SpacexService';
 
-const initialState = [];
+// Action
+const LOAD_MISSIONS = 'spacehub/missions/LOAD_MISSIONS';
+const CHANGE_STATUS = 'spacehub/missions/CHANGE_STATUS';
 
-const reducer = (state = initialState, action) => {
+// Action creators
+const changeStatus = (id) => ({ type: CHANGE_STATUS, payload: id });
+
+// Reducer
+export default function missions(state = [], action = {}) {
   switch (action.type) {
-    case LIST_MISSIONS:
+    case LOAD_MISSIONS:
       return action.payload;
-    case JOIN_MISSION:
-      return state.map((mission) => {
-        if (mission.id !== action.id) {
+    case CHANGE_STATUS:
+      return [...state.map((mission) => {
+        if (mission.mission_id !== action.payload) {
           return mission;
         }
-        return { ...mission, reserved: true };
-      });
-    case LEAVE_MISSION:
-      return state.map((mission) => {
-        if (mission.id !== action.id) {
-          return mission;
-        }
-        return { ...mission, reserved: false };
-      });
+        return { ...mission, reserved: !mission.reserved };
+      })];
     default:
       return state;
   }
-};
+}
 
-const listMissions = (payload) => ({
-  type: LIST_MISSIONS,
-  payload,
-});
+// Side Effects
+const fetchMissions = async (dispatch, getState) => {
+  const currentMissions = getState().missions;
 
-const joinMission = (id) => ({
-  type: JOIN_MISSION,
-  id,
-});
-
-const leaveMission = (id) => ({
-  type: LEAVE_MISSION,
-  id,
-});
-
-const getMissionsFromAPI = async () => {
-  const API_URL = 'https://api.spacexdata.com/v3/missions';
-  const RESPONSE = await fetch(API_URL);
-  if (await RESPONSE.ok) {
-    const RAW_MISSIONS = await RESPONSE.json();
-    const MISSIONS = [];
-    for (let i = 0; i < RAW_MISSIONS.length; i += 1) {
-      MISSIONS.push({
+  if (currentMissions.length === 0) {
+    const { data } = await SpacesxService.getMissions();
+    const missions = data.map((mission) => (
+      {
+        mission_id: mission.mission_id,
+        mission_name: mission.mission_name,
+        description: mission.description,
         reserved: false,
-        id: RAW_MISSIONS[i].mission_id,
-        name: RAW_MISSIONS[i].mission_name,
-        description: RAW_MISSIONS[i].description,
-      });
-    }
-    return MISSIONS;
+      }
+    ));
+    dispatch({ type: LOAD_MISSIONS, payload: missions });
   }
-  return [];
 };
 
-export default reducer;
-export {
-  getMissionsFromAPI, listMissions, joinMission, leaveMission,
-};
+export { fetchMissions, changeStatus };
