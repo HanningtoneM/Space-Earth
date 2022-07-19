@@ -1,11 +1,6 @@
-
-
 # space earth
 
 > Description the project.
-
-
-# Book-store
 Space traveller  built with React 
 
 The functionalities are:
@@ -14,6 +9,10 @@ The functionalities are:
 - join missions
 
 > Using CSS, JavaScript and react
+
+## Live Demo
+
+[Live Demo Link](https://spacetravelhanningtone.netlify.app)
 
 
 
@@ -41,7 +40,7 @@ To get a local copy up follow these simple example steps.
 
 1. Clone this repository or download the Zip folder:
 
-**``git clone https://github.com/NatiDeme/space-traveler.git``**
+**``git clone https://github.com/HanningtoneM/Space-Earth.git``**
 
 2. Navigate to the location of the folder in your machine:
 
