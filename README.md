@@ -59,11 +59,6 @@ To get a local copy up follow these simple example steps.
 - linkedin: [@Hanningtone Machuka](https://www.linkedin.com/in/hanningtone-machuka-58501722a)
 - Twitter: [@Hanningtone254](https://twitter.com/Hanningtone254?t=YVXXz9EZzOhR5vPi3DlHDQ&s=09)
 
-👤 **Natnael Demelash**
-
-- GitHub: [@NatiDeme](https://github.com/NatiDeme)
-- Twitter: [@NatiDemelash](https://twitter.com/NatiDemelash)
-- LinkedIn: [Natnael Demelash](https://www.linkedin.com/in/natnael-demelash/)
 
 ## 🤝 Contributing
 
